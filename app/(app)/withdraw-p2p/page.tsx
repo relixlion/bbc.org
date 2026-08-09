@@ -23,8 +23,8 @@ export default function WithdrawP2PPage() {
   useEffect(() => {
     fetch('/api/p2p/vendors').then(r => r.json()).then(d => Array.isArray(d) && setVendors(d))
     fetch('/api/auth/me').then(r => r.json()).then(setUser)
-    fetch('/api/admin/settings').then(r => r.json()).then(s => {
-      if (s.p2p_withdrawal_thresholds) setThresholds(s.p2p_withdrawal_thresholds)
+    fetch('/api/settings').then(r => r.json()).then(s => {
+      if (s.withdrawal_thresholds) setThresholds(s.withdrawal_thresholds)
     })
   }, [])
 

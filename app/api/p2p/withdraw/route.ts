@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     })
 
     const { data: trade, error } = await supabaseAdmin.from('p2p_trades').insert({
-      type: 'withdraw',
+      type: 'withdrawal',
       user_id: session.id,
       vendor_id,
       naira_amount,

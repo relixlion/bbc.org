@@ -32,17 +32,19 @@ export async function GET() {
     .select('amount')
     .eq('status', 'pending')
 
-  // Completed withdrawals
+  // Completed withdrawals — from p2p_trades
   const { data: paidWithdrawals } = await supabaseAdmin
-    .from('withdrawals')
-    .select('amount')
-    .eq('status', 'paid')
+    .from('p2p_trades')
+    .select('naira_amount')
+    .eq('type', 'withdrawal')
+    .eq('status', 'settled')
 
-  // Pending withdrawals
+  // Pending withdrawals — from p2p_trades
   const { data: pendingWithdrawals } = await supabaseAdmin
-    .from('withdrawals')
-    .select('amount')
-    .eq('status', 'pending')
+    .from('p2p_trades')
+    .select('naira_amount')
+    .eq('type', 'withdrawal')
+    .in('status', ['pending', 'vendor_paid'])
 
   // All user wallet balances
   const { data: users } = await supabaseAdmin
@@ -62,8 +64,8 @@ export async function GET() {
   const totalInvested = allPlans?.reduce((s, p) => s + p.amount_paid, 0) ?? 0
   const totalClaimedRewards = claimedRewards?.reduce((s, r) => s + r.amount, 0) ?? 0
   const totalPendingRewards = pendingRewards?.reduce((s, r) => s + r.amount, 0) ?? 0
-  const totalWithdrawn = paidWithdrawals?.reduce((s, w) => s + w.amount, 0) ?? 0
-  const totalPendingWithdrawals = pendingWithdrawals?.reduce((s, w) => s + w.amount, 0) ?? 0
+  const totalWithdrawn = paidWithdrawals?.reduce((s, w) => s + (w.naira_amount ?? 0), 0) ?? 0
+  const totalPendingWithdrawals = pendingWithdrawals?.reduce((s, w) => s + (w.naira_amount ?? 0), 0) ?? 0
   const totalWalletBalance = users?.reduce((s, u) => s + u.wallet_balance, 0) ?? 0
 
   // Per-plan obligation projections

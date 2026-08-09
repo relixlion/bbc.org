@@ -14,7 +14,7 @@ export default async function TeamPage() {
   const { data: commissions } = await supabaseAdmin.from('rewards').select('amount').eq('user_id', session!.id).eq('type', 'referral')
   const totalComm = commissions?.reduce((s, r) => s + r.amount, 0) ?? 0
   const { data: l1 } = await supabaseAdmin.from('users').select('id,phone,tier,total_invested').eq('referred_by', session!.id)
-  const referralLink = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bbcooperative.com'}/register?code=${user?.referral_code}`
+  const referralLink = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bbc-org.vercel.app'}/register?code=${user?.referral_code}`
   const TIER: Record<string, string> = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', platinum: 'Platinum' }
 
   return (

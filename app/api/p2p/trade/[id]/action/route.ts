@@ -16,7 +16,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     if (action === 'vendor_paid' && vendor) {
       if (trade.vendor_id !== vendor.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      await supabaseAdmin.from('p2p_trades').update({ status: 'vendor_paid' }).eq('id', id)
+      // Start 32hr countdown from now
+      const autoSettle = new Date(Date.now() + 32 * 60 * 60 * 1000).toISOString()
+      await supabaseAdmin.from('p2p_trades').update({
+        status: 'vendor_paid',
+        auto_settle_at: autoSettle,
+      }).eq('id', id)
       return NextResponse.json({ success: true })
     }
 

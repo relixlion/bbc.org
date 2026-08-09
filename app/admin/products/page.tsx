@@ -4,7 +4,7 @@ import { Plan } from '@/types'
 import { GreenButton, Input, Select } from '@/components/ui'
 import { formatNaira } from '@/lib/format'
 
-const EMPTY = { name: '', category: 'bigbrother', plan_type: 'daily', price: '', daily_return: '', fixed_return_percent: '', duration_days: '', is_active: true }
+const EMPTY = { name: '', category: 'bigbrother', plan_type: 'daily', price: '', daily_return: '', fixed_return_percent: '', duration_days: '', weekly_salary: '', is_active: true }
 const CAT_LABEL: Record<string, string> = { bigbrother: 'Big Brother', football: 'Football', forest: 'Forest' }
 const CAT_COLOR: Record<string, string> = { bigbrother: 'var(--emerald)', football: '#92400E', forest: '#166534' }
 
@@ -36,7 +36,7 @@ export default function AdminProducts() {
 
   function edit(p: Plan) {
     setEditing(p.id)
-    setForm({ name: p.name, category: p.category, plan_type: p.plan_type, price: String(p.price), daily_return: String(p.daily_return ?? ''), fixed_return_percent: String(p.fixed_return_percent ?? ''), duration_days: String(p.duration_days), is_active: p.is_active })
+    setForm({ name: p.name, category: p.category, plan_type: p.plan_type, price: String(p.price), daily_return: String(p.daily_return ?? ''), fixed_return_percent: String(p.fixed_return_percent ?? ''), duration_days: String(p.duration_days), weekly_salary: String((p as unknown as Record<string,unknown>).weekly_salary ?? ''), is_active: p.is_active })
     setShowForm(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -79,7 +79,7 @@ export default function AdminProducts() {
             <Input label="Price (₦)" type="number" placeholder="0" value={String(form.price)} onChange={setF('price')} />
             <Input label="Duration (days)" type="number" placeholder="0" value={String(form.duration_days)} onChange={setF('duration_days')} />
             <div style={{ gridColumn: '1 / -1' }}>
-              <Input label="Weekly salary (₦) — paid per plan per week" type="number" placeholder="0" value={String(form.weekly_salary ?? '')} onChange={setF('weekly_salary')} />
+              <Input label="Weekly salary (₦) — paid per plan per week to user" type="number" placeholder="0" value={String(form.weekly_salary ?? '')} onChange={setF('weekly_salary')} />
             </div>
             {form.plan_type === 'daily' && (
               <div style={{ gridColumn: '1 / -1' }}>

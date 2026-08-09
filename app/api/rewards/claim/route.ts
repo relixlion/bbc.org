@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       .update({ status: 'claimed', claimed_at: new Date().toISOString() })
       .eq('id', reward_id)
 
-    // Credit wallet with net amount after fee
+    // Credit wallet with net amount after fee — creditWallet handles both RPC and transaction log
     await creditWallet(
       session.id,
       netAmount,
@@ -51,20 +51,7 @@ export async function POST(req: NextRequest) {
       reward.label ?? `${reward.type} reward claimed${fee > 0 ? ` (fee: ₦${fee})` : ''}`
     )
 
-    // Update wallet balance in DB
-    const { data: user } = await supabaseAdmin
-      .from('users')
-      .select('wallet_balance')
-      .eq('id', session.id)
-      .single()
-
-    const newBalance = (user?.wallet_balance ?? 0) + netAmount
-    await supabaseAdmin
-      .from('users')
-      .update({ wallet_balance: newBalance })
-      .eq('id', session.id)
-
-    return NextResponse.json({ success: true, new_balance: newBalance, fee, net_amount: netAmount })
+    return NextResponse.json({ success: true, fee, net_amount: netAmount })
   } catch (err) {
     console.error(err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
