@@ -21,7 +21,7 @@ export default async function TeamPage() {
     <div style={{ paddingBottom: '5rem' }}>
       <div className="page-header">
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.375rem', color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '0.25rem' }}>Your team</div>
-        <div style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.5)' }}>Earn commissions across 3 levels</div>
+        <div style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.5)' }}>Earn commission across 3 levels</div>
       </div>
 
       {/* Stats */}
