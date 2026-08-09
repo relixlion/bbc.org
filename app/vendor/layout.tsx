@@ -46,6 +46,7 @@ export default async function VendorLayout({ children }: { children: React.React
               <Link href="/vendor/dashboard" style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Dashboard</Link>
               <Link href="/vendor/trades" style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Trades</Link>
               <Link href="/vendor/earnings" style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Earnings</Link>
+              <Link href="/vendor/payouts" style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Payouts</Link>
               <form action="/api/vendor/auth/logout" method="POST">
                 <button type="submit" style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'rgba(255,255,255,0.35)', background: 'none', border: 'none', cursor: 'pointer' }}>Sign out</button>
               </form>

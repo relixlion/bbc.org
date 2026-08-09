@@ -6,13 +6,13 @@ const NAV = [
   { href: '/admin/dashboard', label: 'Dashboard' },
   { href: '/admin/products', label: 'Plans' },
   { href: '/admin/users', label: 'Users' },
-  { href: '/admin/withdrawals', label: 'Withdrawals' },
   { href: '/admin/rewards', label: 'Gift rewards' },
   { href: '/admin/tasks', label: 'Tasks' },
   { href: '/admin/community', label: 'Community' },
   { href: '/admin/settings', label: 'Settings' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/vendors', label: 'Vendors' },
+  { href: '/admin/vendor-payouts', label: 'Vendor payouts' },
   { href: '/admin/trades', label: 'P2P Trades' },
 ]
 
