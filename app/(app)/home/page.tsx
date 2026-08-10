@@ -13,6 +13,8 @@ export default async function HomePage() {
   const todayTotal = todayRewards?.reduce((s, r) => s + r.amount, 0) ?? 0
   const { data: communityPosts } = await supabaseAdmin.from('community_posts').select('*, user:users(phone)').eq('status', 'visible').order('created_at', { ascending: false }).limit(3)
   const dateStr = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()
+  const { data: checkinSetting } = await supabaseAdmin.from('admin_settings').select('value').eq('key', 'checkin_amount').single()
+  const checkinAmount = Number(checkinSetting?.value ?? 80)
 
   return (
     <div style={{ paddingBottom: '5rem' }}>
@@ -71,7 +73,7 @@ export default async function HomePage() {
         <Link href="/profile/checkin" style={{ background: 'var(--emerald)', borderRadius: 'var(--r-lg)', padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textDecoration: 'none' }}>
           <div>
             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--white)', marginBottom: '0.125rem' }}>Daily check-in</div>
-            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.55)' }}>Earn ₦80 — complete today's task</div>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.55)' }}>Earn ₦{checkinAmount.toLocaleString()} — complete today's task</div>
           </div>
           <div style={{ background: 'var(--amber)', color: 'var(--white)', fontSize: '0.8125rem', fontWeight: 700, padding: '0.5rem 1rem', borderRadius: 'var(--r-sm)' }}>Check in</div>
         </Link>
