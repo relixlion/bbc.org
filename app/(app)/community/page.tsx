@@ -32,6 +32,19 @@ export default async function CommunityPage() {
           Share your withdrawal
         </Link>
 
+        <Link href="/about" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', textDecoration: 'none', background: 'var(--white)', borderRadius: 'var(--r-lg)', padding: '1rem 1.25rem', border: '1px solid var(--sand-2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ width: 36, height: 36, borderRadius: 'var(--r-sm)', background: 'var(--emerald-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--ink)' }}>About B.B Cooperative</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--ink-3)' }}>How we generate income for our members</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9,18 15,12 9,6"/></svg>
+        </Link>
+
         {posts?.map((post) => {
           const phone = (post.user as { phone: string })?.phone ?? ''
           return (
