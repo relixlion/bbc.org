@@ -2,6 +2,7 @@ import { getSession } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
 import { formatNaira, maskPhone } from '@/lib/format'
 import Link from 'next/link'
+import OnboardingModal from './OnboardingModal'
 
 const TIER_LABEL: Record<string, string> = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', platinum: 'Platinum' }
 
@@ -18,6 +19,7 @@ export default async function HomePage() {
 
   return (
     <div style={{ paddingBottom: '5rem' }}>
+      <OnboardingModal />
       {/* Header */}
       <div style={{ background: 'var(--emerald)', padding: '1rem 1.25rem 1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
