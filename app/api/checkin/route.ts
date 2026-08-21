@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getSession } from '@/lib/auth'
 import { getSettings } from '@/lib/wallet'
+import { todayNigeria, isSundayNigeria, endOfDayNigeria } from '@/lib/time'
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = todayNigeria()
 
     // Check already checked in
     const { data: existing } = await supabaseAdmin
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     const checkinAmount = Number(settings.checkin_amount ?? 80)
 
     // Sunday — no task gate, reward is free to claim
-    const isSunday = new Date().getDay() === 0
+    const isSunday = isSundayNigeria()
 
     // Get checkin task (skip on Sundays)
     let task = null
@@ -56,8 +57,7 @@ export async function POST(req: NextRequest) {
       .lt('created_at', today)
 
     // Create reward only — wallet credit happens at claim time
-    const expiresAt = new Date()
-    expiresAt.setHours(23, 59, 59, 999)
+    const expiresAt = endOfDayNigeria()
 
     await supabaseAdmin.from('rewards').insert({
       user_id: session.id,
@@ -81,7 +81,7 @@ export async function GET() {
   const session = await getSession()
   if (!session) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = todayNigeria()
   const { data: existing } = await supabaseAdmin
     .from('checkin_log')
     .select('id')
@@ -89,9 +89,10 @@ export async function GET() {
     .eq('checked_in_at', today)
     .single()
 
-  // Get week streak
-  const startOfWeek = new Date()
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay())
+  // Get week streak using Nigeria time
+  const nowNg = new Date(Date.now() + 60 * 60 * 1000)
+  const startOfWeek = new Date(nowNg)
+  startOfWeek.setUTCDate(nowNg.getUTCDate() - nowNg.getUTCDay())
   const { data: weekLogs } = await supabaseAdmin
     .from('checkin_log')
     .select('checked_in_at')

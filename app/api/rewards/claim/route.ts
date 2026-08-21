@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getSession } from '@/lib/auth'
 import { creditWallet } from '@/lib/wallet'
+import { nowNigeria } from '@/lib/time'
 
 export async function POST(req: NextRequest) {
   try {

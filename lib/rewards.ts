@@ -1,11 +1,11 @@
 import { supabaseAdmin } from './supabase'
 import { getSettings } from './wallet'
+import { todayNigeria, isSundayNigeria, endOfDayNigeria } from './time'
 
 // Called by cron or on-demand: generate pending daily rewards for all active plans
 export async function accrueAllDailyRewards() {
-  const today = new Date().toISOString().split('T')[0]
-  const isSunday = new Date().getDay() === 0
-  if (isSunday) return { count: 0, skipped: 'sunday' }
+  const today = todayNigeria()
+  if (isSundayNigeria()) return { count: 0, skipped: 'sunday' }
 
   // Get all active daily plans not yet rewarded today
   const { data: userPlans } = await supabaseAdmin
@@ -49,8 +49,7 @@ export async function accrueAllDailyRewards() {
       .lt('created_at', today)
 
     // Create daily reward — no task on Sundays
-    const expires_at = new Date()
-    expires_at.setHours(23, 59, 59, 999)
+    const expires_at = endOfDayNigeria()
 
     await supabaseAdmin.from('rewards').insert({
       user_id: up.user_id,
@@ -76,7 +75,7 @@ export async function accrueAllDailyRewards() {
 
 // Accrue fixed plan maturity rewards
 export async function accrueMaturedFixedRewards() {
-  const today = new Date().toISOString().split('T')[0]
+  const today = todayNigeria()
 
   const { data: matured } = await supabaseAdmin
     .from('user_plans')
