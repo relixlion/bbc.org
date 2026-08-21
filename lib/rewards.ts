@@ -4,6 +4,8 @@ import { getSettings } from './wallet'
 // Called by cron or on-demand: generate pending daily rewards for all active plans
 export async function accrueAllDailyRewards() {
   const today = new Date().toISOString().split('T')[0]
+  const isSunday = new Date().getDay() === 0
+  if (isSunday) return { count: 0, skipped: 'sunday' }
 
   // Get all active daily plans not yet rewarded today
   const { data: userPlans } = await supabaseAdmin
@@ -37,7 +39,19 @@ export async function accrueAllDailyRewards() {
       continue
     }
 
-    // Create daily reward
+    // Expire any unclaimed daily rewards from previous days
+    await supabaseAdmin
+      .from('rewards')
+      .update({ status: 'expired' })
+      .eq('user_id', up.user_id)
+      .eq('type', 'daily')
+      .eq('status', 'pending')
+      .lt('created_at', today)
+
+    // Create daily reward — no task on Sundays
+    const expires_at = new Date()
+    expires_at.setHours(23, 59, 59, 999)
+
     await supabaseAdmin.from('rewards').insert({
       user_id: up.user_id,
       type: 'daily',
@@ -47,6 +61,7 @@ export async function accrueAllDailyRewards() {
       task_required: taskRequired,
       task_completed: false,
       source_plan_id: up.id,
+      expires_at: expires_at.toISOString(),
     })
 
     // Update last_reward_date

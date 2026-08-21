@@ -35,8 +35,11 @@ export default async function HomePage() {
         </div>
 
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', color: 'var(--white)', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: '1.25rem' }}>
-          Good morning,<br />
-          <span style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.5)', fontSize: '1.375rem' }}>Member.</span>
+          {(() => {
+            const h = new Date().getHours()
+            const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
+            return <>{greeting},<br /><span style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.5)', fontSize: '1.375rem' }}>Member.</span></>
+          })()}
         </div>
 
         {/* Balance strip */}

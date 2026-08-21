@@ -46,7 +46,19 @@ export async function POST(req: NextRequest) {
       checked_in_at: today,
     })
 
+    // Expire any previous unclaimed checkin rewards
+    await supabaseAdmin
+      .from('rewards')
+      .update({ status: 'expired' })
+      .eq('user_id', session.id)
+      .eq('type', 'checkin')
+      .eq('status', 'pending')
+      .lt('created_at', today)
+
     // Create reward only — wallet credit happens at claim time
+    const expiresAt = new Date()
+    expiresAt.setHours(23, 59, 59, 999)
+
     await supabaseAdmin.from('rewards').insert({
       user_id: session.id,
       type: 'checkin',
@@ -55,6 +67,7 @@ export async function POST(req: NextRequest) {
       status: 'pending',
       task_required: !!task,
       task_completed: false,
+      expires_at: expiresAt.toISOString(),
     })
 
     return NextResponse.json({ success: true, amount: checkinAmount, task: task ?? null })
