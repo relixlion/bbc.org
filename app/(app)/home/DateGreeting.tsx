@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 export default function DateGreeting() {
   const [greeting, setGreeting] = useState('')
   const [dateStr, setDateStr] = useState('')
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const now = new Date()
@@ -12,7 +13,15 @@ export default function DateGreeting() {
     setDateStr(now.toLocaleDateString('en-GB', {
       weekday: 'short', day: 'numeric', month: 'short'
     }).toUpperCase())
+    setReady(true)
   }, [])
+
+  if (!ready) return (
+    <>
+      <div style={{ height: '1.75rem', marginBottom: '0.875rem' }} />
+      <div style={{ height: '3.5rem', marginBottom: '1.25rem' }} />
+    </>
+  )
 
   return (
     <>
