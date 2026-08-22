@@ -42,7 +42,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: { c
             ? (plan.daily_return ?? 0) * plan.duration_days
             : plan.price * (1 + (plan.fixed_return_percent ?? 0) / 100)
           return (
-            <div key={plan.id} className="card">
+            <Link key={plan.id} href={`/products/${plan.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+            <div className="card">
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.875rem', marginBottom: '0.875rem' }}>
                 <div style={{ width: 44, height: 44, borderRadius: 'var(--r-sm)', background: CAT_COLOR[plan.category] ?? 'var(--emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--white)' }}>{plan.name.slice(0,2).toUpperCase()}</span>
@@ -72,8 +73,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: { c
                 <div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--emerald)' }}>{plan.duration_days}</div><div className="t-label" style={{ marginTop: '2px' }}>Days</div></div>
               </div>
 
-              <Link href={`/products/${plan.id}`} className="btn btn-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Buy plan</Link>
+              <div className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Buy plan</div>
             </div>
+            </Link>
           )
         })}
         {!plans?.length && <div className="t-caption" style={{ textAlign: 'center', padding: '3rem 0' }}>No plans in this category yet.</div>}

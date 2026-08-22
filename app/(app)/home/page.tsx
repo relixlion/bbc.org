@@ -100,7 +100,8 @@ export default async function HomePage() {
           const daysLeft = Math.max(0, Math.ceil((new Date(up.end_date).getTime() - Date.now()) / 86400000))
           const daysIn = plan.duration_days - daysLeft
           return (
-            <div key={up.id} className="card" style={{ marginBottom: '0.625rem' }}>
+            <Link key={up.id} href={`/products/${(up.plan as {id:string})?.id ?? ''}`} style={{ textDecoration: 'none', display: 'block', marginBottom: '0.625rem' }}>
+            <div className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
                 <div>
                   <div className="t-subhead">{plan.name}</div>
@@ -116,6 +117,7 @@ export default async function HomePage() {
                 {plan.daily_return && <span className="pill pill-amber">{formatNaira(plan.daily_return)}/day</span>}
               </div>
             </div>
+            </Link>
           )
         }) : (
           <Link href="/products" style={{ display: 'block', border: '1.5px dashed var(--sand-3)', borderRadius: 'var(--r-lg)', padding: '1.5rem', textAlign: 'center', textDecoration: 'none' }}>
