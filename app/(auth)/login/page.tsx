@@ -26,7 +26,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100svh', display: 'flex', flexDirection: 'column', background: 'var(--sand)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--sand)' }}>
       {/* Brand header */}
       <div style={{ background: 'var(--emerald)', padding: '3rem 1.5rem 2.5rem' }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--white)', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '0.375rem' }}>

@@ -28,7 +28,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div style={{ minHeight: '100svh', display: 'flex', flexDirection: 'column', background: 'var(--sand)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--sand)' }}>
       <div style={{ background: 'var(--emerald)', padding: '2.5rem 1.5rem 2rem' }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', color: 'var(--white)', letterSpacing: '-0.03em', lineHeight: 1 }}>
           B.B Cooperative
