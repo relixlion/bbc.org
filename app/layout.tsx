@@ -3,7 +3,24 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'B.B Cooperative',
-  description: 'Members-only investment platform',
+  description: 'A cooperative platform for advertising partnerships and currency investments. Earn daily returns, weekly salary and referral commissions.',
+  keywords: 'investment, cooperative, daily returns, forex, advertising',
+  icons: {
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.ico' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  openGraph: {
+    title: 'B.B Cooperative',
+    description: 'Earn daily returns through advertising and forex partnerships.',
+    url: 'https://bbc-org.vercel.app',
+    siteName: 'B.B Cooperative',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
