@@ -1,10 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { GreenButton, Input, Alert } from '@/components/ui'
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [form, setForm] = useState({ phone: '', password: '', confirm: '', referral_code: '' })
@@ -141,5 +141,12 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  )
+}
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100svh', background: 'var(--sand)' }} />}>
+      <RegisterForm />
+    </Suspense>
   )
 }
