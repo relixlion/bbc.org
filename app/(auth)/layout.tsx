@@ -1,8 +1,7 @@
-import { getSession } from '@/lib/auth'
-import { redirect } from 'next/navigation'
-
-export default async function AuthLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession()
-  if (session) redirect('/home')
-  return <div className="app-shell">{children}</div>
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100svh', background: 'var(--sand)', boxShadow: '0 0 0 1px var(--sand-3)', position: 'relative' }}>
+      {children}
+    </div>
+  )
 }
