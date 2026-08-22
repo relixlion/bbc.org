@@ -8,6 +8,11 @@ export async function POST(req: NextRequest) {
   try {
     const { phone, password, referral_code } = await req.json()
 
+    // Referral code is mandatory
+    if (!referral_code || !referral_code.trim()) {
+      return NextResponse.json({ error: 'A referral code is required to create an account' }, { status: 400 })
+    }
+
     // Validate Nigerian phone number
     if (!/^(070|080|081|090|091)\d{8}$/.test(phone)) {
       return NextResponse.json({ error: 'Enter a valid 11-digit Nigerian phone number' }, { status: 400 })
@@ -27,21 +32,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Phone number already registered' }, { status: 409 })
     }
 
-    // Resolve referrer
-    let referrerId: string | null = null
-    if (referral_code) {
-      const { data: referrer } = await supabaseAdmin
-        .from('users')
-        .select('id')
-        .eq('referral_code', referral_code.toUpperCase())
-        .single()
-      referrerId = referrer?.id ?? null
+    // Validate referral code — must match a real user
+    const { data: referrer } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('referral_code', referral_code.trim().toUpperCase())
+      .single()
+
+    if (!referrer) {
+      return NextResponse.json({ error: 'Invalid referral code. Ask your referrer for their link or code.' }, { status: 400 })
     }
+
+    const referrerId = referrer.id
 
     // Hash password
     const password_hash = await bcrypt.hash(password, 12)
 
-    // Generate unique referral code
+    // Generate unique referral code for new user
     let code = generateReferralCode()
     let codeExists = true
     while (codeExists) {
@@ -72,7 +79,6 @@ export async function POST(req: NextRequest) {
     // Credit ₦1,000 signup bonus
     await creditWallet(user.id, 1000, 'signup_bonus', 'Welcome bonus — ₦1,000 on signup')
 
-    // Update wallet balance in response
     await supabaseAdmin
       .from('users')
       .update({ wallet_balance: 1000 })

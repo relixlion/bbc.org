@@ -10,6 +10,7 @@ interface Settings {
   p2p_claim_fees: Record<string, number>
   p2p_rate: number
   p2p_withdrawal_fee_percent: number
+  invite_codes: { code1: string; code2: string }
 }
 
 const ALL_DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
@@ -23,6 +24,7 @@ const DEFAULT: Settings = {
   p2p_claim_fees: { daily: 0, fixed: 0, referral: 0, checkin: 0, salary: 15, admin_gift: 0 },
   p2p_rate: 1600,
   p2p_withdrawal_fee_percent: 10,
+  invite_codes: { code1: '', code2: '' },
 }
 
 export default function AdminSettings() {
@@ -39,6 +41,7 @@ export default function AdminSettings() {
         p2p_claim_fees: data.p2p_claim_fees ?? DEFAULT.p2p_claim_fees,
         p2p_rate: Number(data.p2p_rate ?? DEFAULT.p2p_rate),
         p2p_withdrawal_fee_percent: Number(data.p2p_withdrawal_fee_percent ?? DEFAULT.p2p_withdrawal_fee_percent),
+        invite_codes: data.invite_codes ?? DEFAULT.invite_codes,
       })
     })
   }, [])
@@ -73,6 +76,25 @@ export default function AdminSettings() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+        {/* Admin invite codes */}
+        <div className="card" style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1rem' }}>
+            <div>
+              <div className="t-subhead">Admin invite codes</div>
+              <div className="t-caption">These appear on the registration page as quick-select options. Paste your own referral codes here.</div>
+            </div>
+            <SaveBtn k="invite_codes" value={s.invite_codes} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+            <Input label="Primary code" placeholder="Your referral code"
+              value={s.invite_codes?.code1 ?? ''}
+              onChange={e => setS({ ...s, invite_codes: { ...s.invite_codes, code1: e.target.value.toUpperCase() } })} />
+            <Input label="Secondary code" placeholder="Your second code"
+              value={s.invite_codes?.code2 ?? ''}
+              onChange={e => setS({ ...s, invite_codes: { ...s.invite_codes, code2: e.target.value.toUpperCase() } })} />
+          </div>
+        </div>
 
         {/* Check-in */}
         <div className="card" style={{ padding: '1.25rem' }}>

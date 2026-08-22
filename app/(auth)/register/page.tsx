@@ -1,24 +1,53 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { GreenButton, Input, Alert } from '@/components/ui'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [form, setForm] = useState({ phone: '', password: '', confirm: '', referral_code: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [adminCodes, setAdminCodes] = useState<{ code1: string; code2: string }>({ code1: '', code2: '' })
   const f = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm(p => ({ ...p, [k]: e.target.value }))
+
+  useEffect(() => {
+    // Pre-fill code from URL
+    const code = searchParams.get('code')
+    if (code) setForm(p => ({ ...p, referral_code: code.toUpperCase() }))
+
+    // Fetch admin invite codes
+    fetch('/api/settings').then(r => r.json()).then(s => {
+      if (s.invite_codes) setAdminCodes(s.invite_codes)
+    })
+  }, [])
+
+  function selectAdminCode(code: string) {
+    setForm(p => ({ ...p, referral_code: code }))
+  }
 
   async function handleRegister() {
     setError('')
-    if (form.password !== form.confirm) { setError('Passwords do not match'); return }
+    if (!form.referral_code.trim()) {
+      setError('You must use a referral link or enter a valid code')
+      return
+    }
+    if (form.password !== form.confirm) {
+      setError('Passwords do not match')
+      return
+    }
     setLoading(true)
     try {
       const res = await fetch('/api/auth/signup', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: form.phone, password: form.password, referral_code: form.referral_code }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: form.phone,
+          password: form.password,
+          referral_code: form.referral_code.trim().toUpperCase(),
+        }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error); return }
@@ -26,6 +55,8 @@ export default function RegisterPage() {
     } catch { setError('Something went wrong.') }
     finally { setLoading(false) }
   }
+
+  const hasAdminCodes = adminCodes.code1 || adminCodes.code2
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--sand)' }}>
@@ -54,10 +85,51 @@ export default function RegisterPage() {
 
         {error && <Alert type="error">{error}</Alert>}
 
+        {/* Referral code section */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--ink-3)', letterSpacing: '0.03em', textTransform: 'uppercase', marginBottom: '0.625rem' }}>
+            Referral code <span style={{ color: 'var(--danger)' }}>*</span>
+          </div>
+
+          {hasAdminCodes && (
+            <div style={{ marginBottom: '0.75rem' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--ink-3)', marginBottom: '0.5rem' }}>Quick select</div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {adminCodes.code1 && (
+                  <button onClick={() => selectAdminCode(adminCodes.code1)}
+                    style={{ flex: 1, padding: '0.625rem 0.875rem', borderRadius: 'var(--r-sm)', border: form.referral_code === adminCodes.code1 ? '2px solid var(--emerald)' : '1.5px solid var(--sand-3)', background: form.referral_code === adminCodes.code1 ? 'var(--emerald-bg)' : 'var(--white)', fontFamily: 'monospace', fontSize: '0.875rem', fontWeight: 700, color: form.referral_code === adminCodes.code1 ? 'var(--emerald)' : 'var(--ink)', cursor: 'pointer', transition: 'all 0.12s', textAlign: 'center' }}>
+                    {adminCodes.code1}
+                  </button>
+                )}
+                {adminCodes.code2 && (
+                  <button onClick={() => selectAdminCode(adminCodes.code2)}
+                    style={{ flex: 1, padding: '0.625rem 0.875rem', borderRadius: 'var(--r-sm)', border: form.referral_code === adminCodes.code2 ? '2px solid var(--emerald)' : '1.5px solid var(--sand-3)', background: form.referral_code === adminCodes.code2 ? 'var(--emerald-bg)' : 'var(--white)', fontFamily: 'monospace', fontSize: '0.875rem', fontWeight: 700, color: form.referral_code === adminCodes.code2 ? 'var(--emerald)' : 'var(--ink)', cursor: 'pointer', transition: 'all 0.12s', textAlign: 'center' }}>
+                    {adminCodes.code2}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div style={{ position: 'relative' }}>
+            <input
+              type="text"
+              placeholder="Or enter referral code"
+              value={form.referral_code}
+              onChange={e => setForm(p => ({ ...p, referral_code: e.target.value.toUpperCase() }))}
+              style={{ width: '100%', padding: '0.875rem 2.5rem 0.875rem 1rem', borderRadius: 'var(--r-sm)', border: form.referral_code ? '1.5px solid var(--emerald)' : '1.5px solid var(--sand-3)', background: 'var(--white)', fontSize: '0.9375rem', fontFamily: 'monospace', letterSpacing: '0.05em', color: 'var(--ink)', outline: 'none', transition: 'border-color 0.12s' }}
+            />
+            {form.referral_code && (
+              <div style={{ position: 'absolute', right: '0.875rem', top: '50%', transform: 'translateY(-50%)' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            )}
+          </div>
+        </div>
+
         <Input label="Phone number" type="tel" placeholder="08012345678" maxLength={11} value={form.phone} onChange={f('phone')} />
         <Input label="Password" type="password" placeholder="Min. 6 characters" value={form.password} onChange={f('password')} />
         <Input label="Confirm password" type="password" placeholder="Repeat password" value={form.confirm} onChange={f('confirm')} />
-        <Input label="Referral code (optional)" placeholder="e.g. ABC123" value={form.referral_code} onChange={f('referral_code')} />
 
         <GreenButton onClick={handleRegister} disabled={loading}>
           {loading ? 'Creating account…' : 'Create account'}
