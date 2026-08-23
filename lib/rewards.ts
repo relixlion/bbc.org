@@ -5,6 +5,15 @@ import { todayNigeria, isSundayNigeria, endOfDayNigeria } from './time'
 // Called by cron or on-demand: generate pending daily rewards for all active plans
 export async function accrueAllDailyRewards() {
   const today = todayNigeria()
+
+  // Always expire stale daily and checkin rewards regardless of day
+  await supabaseAdmin
+    .from('rewards')
+    .update({ status: 'expired' })
+    .in('type', ['daily', 'checkin'])
+    .eq('status', 'pending')
+    .lt('created_at', today)
+
   if (isSundayNigeria()) return { count: 0, skipped: 'sunday' }
 
   // Get all active daily plans not yet rewarded today
