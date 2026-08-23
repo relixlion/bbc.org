@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/auth'
 
-const PUBLIC = ['/login', '/register', '/api/auth/login', '/api/auth/signup', '/api/plans', '/api/community']
+const PUBLIC = ['/login', '/register', '/api/settings', '/api/auth/login', '/api/auth/signup', '/api/plans', '/api/community']
 const ADMIN_ONLY = ['/admin']
 
 export async function middleware(req: NextRequest) {
