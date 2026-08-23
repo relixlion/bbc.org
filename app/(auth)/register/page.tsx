@@ -4,6 +4,58 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { GreenButton, Input, Alert } from '@/components/ui'
 
+const LAUNCH = new Date('2026-08-24T11:00:00Z')
+
+function Countdown() {
+  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number; launched: boolean } | null>(null)
+
+  useEffect(() => {
+    function tick() {
+      const diff = LAUNCH.getTime() - Date.now()
+      if (diff <= 0) { setTimeLeft({ h: 0, m: 0, s: 0, launched: true }); return }
+      setTimeLeft({
+        h: Math.floor(diff / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+        launched: false,
+      })
+    }
+    tick()
+    const t = setInterval(tick, 1000)
+    return () => clearInterval(t)
+  }, [])
+
+  const pad = (n: number) => String(n).padStart(2, '0')
+
+  if (!timeLeft || timeLeft.launched) return null
+
+  return (
+    <div>
+      <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.625rem' }}>
+        Official launch in
+      </div>
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        {[
+          { v: pad(timeLeft.h), l: 'HRS' },
+          { v: pad(timeLeft.m), l: 'MIN' },
+          { v: pad(timeLeft.s), l: 'SEC' },
+        ].map(({ v, l }, i) => (
+          <div key={l} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--white)', letterSpacing: '-0.02em', lineHeight: 1 }}>{v}</div>
+              <div style={{ fontSize: '0.5625rem', fontWeight: 700, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', marginTop: '0.25rem' }}>{l}</div>
+            </div>
+            {i < 2 && <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'rgba(255,255,255,0.3)', marginBottom: '1rem' }}>:</div>}
+          </div>
+        ))}
+      </div>
+      <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginTop: '0.625rem' }}>
+        Mon 24 Aug · 12:00 noon Nigeria time
+      </div>
+    </div>
+  )
+}
+
 function RegisterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -61,9 +113,10 @@ function RegisterForm() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--sand)' }}>
       <div style={{ background: 'var(--emerald)', padding: '2.5rem 1.5rem 2rem' }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', color: 'var(--white)', letterSpacing: '-0.03em', lineHeight: 1 }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', color: 'var(--white)', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '1.5rem' }}>
           B.B Cooperative
         </div>
+        <Countdown />
       </div>
 
       <div style={{ flex: 1, padding: '2rem 1.5rem' }}>
