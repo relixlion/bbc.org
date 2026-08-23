@@ -6,7 +6,20 @@ import { getVendorSession } from '@/lib/vendor-auth'
 export async function GET() {
   const session = await getSession()
   const vendor = await getVendorSession()
-  if (!session && !vendor) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+
+  // invite_codes is always public — needed on register page before any session exists
+  const { data: publicData } = await supabaseAdmin
+    .from('admin_settings')
+    .select('key, value')
+    .in('key', ['invite_codes'])
+
+  const publicMap: Record<string, unknown> = {}
+  publicData?.forEach(r => { publicMap[r.key] = r.value })
+
+  // Other settings require auth
+  if (!session && !vendor) {
+    return NextResponse.json(publicMap)
+  }
 
   const { data } = await supabaseAdmin
     .from('admin_settings')
