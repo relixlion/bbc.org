@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { GreenButton, Input, Alert } from '@/components/ui'
 
-const LAUNCH = new Date('2026-08-24T11:00:00Z')
+const LAUNCH = new Date('2026-08-24T07:00:00Z')
 
 function Countdown() {
   const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number; launched: boolean } | null>(null)
@@ -50,7 +50,7 @@ function Countdown() {
         ))}
       </div>
       <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginTop: '0.625rem' }}>
-        Mon 24 Aug · 12:00 noon Nigeria time
+        Mon 24 Aug · 8:00 AM Nigeria time
       </div>
     </div>
   )

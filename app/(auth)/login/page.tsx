@@ -25,7 +25,7 @@ export default function LoginPage() {
     finally { setLoading(false) }
   }
 
-  const LAUNCH = new Date('2026-08-24T11:00:00Z') // 12:00 noon Nigeria = 11:00 UTC
+  const LAUNCH = new Date('2026-08-24T07:00:00Z') // 8:00 AM Nigeria = 07:00 UTC
 
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, launched: false })
 
@@ -87,7 +87,7 @@ export default function LoginPage() {
                 ))}
               </div>
               <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginTop: '0.625rem' }}>
-                Mon 24 Aug · 12:00 noon Nigeria time
+                Mon 24 Aug · 8:00 AM Nigeria time
               </div>
             </div>
           )}
